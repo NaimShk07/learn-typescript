@@ -11,6 +11,7 @@ import { errorHandler } from "./middlewares/error.middleware.js";
 import authRoutes from "./routes/auth.route.js";
 import userRoutesV1 from "./routes/v1/user.route.js";
 import userRoutesV2 from "./routes/v2/user.route.js";
+import rateLimit from "express-rate-limit";
 
 const app = express();
 
@@ -30,9 +31,15 @@ const corsOptions: CorsOptions = {
   credentials: true,
 };
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 15
+})
+
 // Security
 app.use(helmet());
 app.use(cors(corsOptions));
+app.use(limiter);
 
 // Body parsers
 app.use(express.json());

@@ -12,11 +12,19 @@ import {
 } from "../../controllers/user.controller.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
+import rateLimit from "express-rate-limit";
 
 const router = Router();
 
 router.post("/signup", asyncHandler(signUser));
-router.post("/login", asyncHandler(loginUser));
+router.post(
+  "/login",
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 3,
+  }),
+  asyncHandler(loginUser)
+);
 router.post("/refresh", asyncHandler(refreshToken));
 
 router
