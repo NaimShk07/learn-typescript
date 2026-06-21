@@ -47,7 +47,7 @@ app.use(cookieParser());
 app.use(passport.initialize());
 
 // Routes
-app.use("/auth", authRoutes);
+app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutesV1);
 app.use("/api/v2/user", userRoutesV2);
 

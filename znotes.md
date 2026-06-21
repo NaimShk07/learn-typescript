@@ -1,263 +1,275 @@
-# 📘 Week 1 Notes — Node.js + TypeScript + MySQL Backend
+# Backend Notes — Node.js + TypeScript + MySQL + Auth
 
-## 📌 Overview
+## Project Snapshot
 
-This week focused on building a scalable backend API using Node.js, TypeScript, Express, and MySQL with proper architecture and tooling.
+This backend now goes beyond basic CRUD. It includes:
 
-We learned how real backend systems are structured using:
-
-- MVC + Service + Repository pattern
-- MySQL integration
-- Environment configuration
-- Centralized error handling
-- Code quality tools (ESLint, Prettier, Husky)
-
----
-
-# 🏗️ Project Architecture
-
-## 📁 Folder Structure
-
-src/
-│
-├── config/ → Environment + DB setup
-├── controllers/ → Request/Response handling
-├── services/ → Business logic
-├── repositories/ → Database queries (MySQL)
-├── routes/ → API endpoints
-├── middlewares/ → Error handling
-├── utils/ → Helpers (AppError, asyncHandler)
-├── types/ → TypeScript interfaces
-├── app.ts → Express app setup
-└── server.ts → Server entry point
+- layered architecture
+- MySQL with repository pattern
+- JWT authentication
+- refresh token flow
+- Google OAuth with Passport
+- role-based authorization
+- Zod validation
+- Helmet
+- CORS
+- rate limiting
+- centralized error handling
 
 ---
 
-# 🔄 Request Flow
+## Current Architecture
 
-Client Request
-↓
-Route
-↓
-Controller
-↓
-Service
-↓
-Repository
-↓
-MySQL Database
+```text
+Request
+→ Route
+→ Middleware
+→ Controller
+→ Service
+→ Repository
+→ MySQL
+→ Response
+```
 
----
+### Layer Responsibility
 
-# ⚙️ Tech Stack Used
-
-## Node.js
-
-- Runtime for executing JavaScript on server
-- Handles API requests
-
-## Express.js
-
-- Web framework for routing & middleware
-- Simplifies API creation
-
-## TypeScript
-
-- Adds static typing
-- Prevents runtime errors
-- Improves maintainability
-
-## MySQL
-
-- Relational database for structured data
-
-## mysql2
-
-- MySQL driver for Node.js
-- Supports promises
+- `routes/` connect endpoints to middleware and controllers
+- `controllers/` handle request and response
+- `services/` contain business logic
+- `repositories/` contain SQL queries
+- `middlewares/` handle auth, validation, rate limiting, and errors
+- `utils/` contain reusable helpers
+- `types/` contain shared TypeScript types
+- `schemas/` contain Zod validation schemas
 
 ---
 
-# 🧠 Core Concepts Learned
+## Core Features Added
 
----
+### 1. JWT Authentication
 
-## MVC + Layered Architecture
+The project uses:
 
-### Why?
-
-To separate responsibilities and make code scalable.
-
-### Layers:
-
-- Controller → HTTP logic
-- Service → Business logic
-- Repository → Database logic
-
-### Benefit:
-
-- Clean code
-- Easy maintenance
-- Scalable apps
-
----
-
-## Repository Pattern
-
-### Why?
-
-To isolate database queries from business logic.
-
-### Example:
-
-SELECT \* FROM users
-
-### Benefit:
-
-- Easy DB replacement
-- Cleaner service layer
-
----
-
-## Environment Variables (.env)
-
-### Why?
-
-To avoid hardcoding sensitive config.
-
-### Example:
-
-PORT=5000
-DB_HOST=localhost
-
-### Usage:
-
-process.env.PORT
-
----
-
-## MySQL Connection Pool
-
-### Why?
-
-- Reuses DB connections
-- Improves performance
-
----
-
-## Centralized Error Handling
-
-### Why?
-
-Avoid try/catch in every controller.
-
-### Custom Error:
-
-class AppError extends Error
-
-### Global Middleware:
-
-app.use(errorHandler)
-
----
-
-## Async Error Handling
-
-### Why?
-
-Express does not handle async errors automatically.
-
-### Solution:
-
-asyncHandler wrapper
-
----
-
-## API Response Format
-
-### Success:
-
-{
-"success": true,
-"data": {}
-}
-
-### Error:
-
-{
-"success": false,
-"message": "Error message"
-}
-
----
-
-## TypeScript Interfaces
-
-### Why?
-
-- Strong typing
-- Better safety
-- Better IDE support
-
----
-
-## ESLint
-
-### Why?
-
-- Finds bugs
-- Enforces rules
-- Improves code quality
-
----
-
-## Prettier
-
-### Why?
-
-- Auto formats code
-- Keeps consistency
-
----
-
-## Husky + Lint-Staged
-
-### Why?
-
-Runs checks before commit.
+- access token for protected APIs
+- refresh token for issuing a new access token
 
 Flow:
-git commit → lint → format → commit
+
+1. user logs in
+2. server returns access token in response body
+3. server stores refresh token in `httpOnly` cookie
+4. client sends access token in `Authorization` header
+5. refresh route issues new tokens
+
+### 2. Google OAuth
+
+Passport with Google strategy is configured.
+
+Flow:
+
+1. client hits Google auth route
+2. Google verifies user
+3. server finds or creates local user
+4. server creates JWT tokens
+5. refresh token is stored in cookie
+6. access token is returned to client
+
+### 3. RBAC
+
+The project has role-based route protection.
+
+- `authenticate` verifies the access token
+- `authorize(...roles)` checks if the logged-in user has the required role
+
+Example:
+
+- admin-only routes
+- protected user routes
+
+### 4. Request Validation with Zod
+
+Signup now uses schema validation.
+
+Benefits:
+
+- prevents bad input early
+- keeps controllers cleaner
+- ensures parsed request body shape
+
+### 5. Security Middleware
+
+#### Helmet
+
+Adds secure HTTP headers.
+
+#### CORS
+
+Configured with typed allowed origins and `credentials: true`.
+
+#### Rate Limiting
+
+- global limiter for all requests
+- login limiter for brute-force protection
 
 ---
 
-# 🧪 API Endpoints
+## Important Files and Why They Matter
 
-| Method | Endpoint   | Description    |
-| ------ | ---------- | -------------- |
-| GET    | /users     | Get all users  |
-| GET    | /users/:id | Get user by id |
-| POST   | /users     | Create user    |
-| PUT    | /users/:id | Update user    |
-| DELETE | /users/:id | Delete user    |
+### `src/index.ts`
+
+Main app setup:
+
+- Helmet
+- CORS
+- rate limiter
+- JSON parsing
+- cookie parser
+- Passport init
+- route registration
+- error handler
+
+### `src/middlewares/auth.middleware.ts`
+
+Handles:
+
+- access token verification
+- route authorization
+
+### `src/config/passport.ts`
+
+Contains Google OAuth strategy setup.
+
+### `src/middlewares/validate.middleware.ts`
+
+Validates `req.body` using Zod schema.
+
+### `src/utils/request-user.ts`
+
+Safely narrows `req.user` so TypeScript understands authenticated user access.
+
+### `src/types/express.d.ts`
+
+Extends Express request/user typing for custom auth data.
 
 ---
 
-# 🗄️ Database Schema
+## TypeScript Lessons From This Project
 
-CREATE TABLE users (
-id INT AUTO_INCREMENT PRIMARY KEY,
-name VARCHAR(100),
-email VARCHAR(255) UNIQUE,
-created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+### 1. Declaration Merging
+
+Used to extend Express `Request` and `User`.
+
+Why useful:
+
+- lets us add `req.user`
+- avoids using `any`
+
+### 2. Type Narrowing
+
+`getRequestUser(req)` helps make TypeScript understand that `req.user` exists after auth.
+
+### 3. DTOs
+
+Used for request/service data shapes:
+
+- `CreateUserDto`
+- `UpdateUserDto`
+- `LoginUserDto`
+
+### 4. Shared Types
+
+Used for:
+
+- JWT payload
+- user model
+- API response shape
 
 ---
 
-# 🔐 Key Takeaways
+## Middleware Order Matters
 
-- Built full REST API with MySQL
-- Learned MVC architecture
+Current order in the app:
+
+1. Helmet
+2. CORS
+3. rate limiting
+4. body parsers
+5. cookie parser
+6. Passport initialize
+7. routes
+8. error handler
+
+Why important:
+
+- security applies before routes
+- body is available before controllers
+- errors are caught last
+
+---
+
+## Authentication Notes
+
+### Access Token
+
+- short-lived
+- used for protected routes
+- passed in `Authorization` header
+
+### Refresh Token
+
+- stored in cookie
+- used only to get new access token
+- helps keep login session alive
+
+### Cookie Settings
+
+- `httpOnly`
+- `sameSite: "strict"`
+- `secure` in production
+
+---
+
+## Versioned Routes
+
+The project now has:
+
+- `api/v1`
+- `api/v2`
+
+`v2` is currently a placeholder, but this is useful for future API evolution.
+
+---
+
+## Tools Used
+
+- ESLint
+- Prettier
+- Husky
+- TypeScript strict mode
+- mysql2 promise API
+- Passport Google OAuth
+- Zod
+- express-rate-limit
+
+---
+
+## What This Project Teaches Well
+
+- how to structure a backend
+- how auth flows are layered
+- how middleware composes in Express
+- how TypeScript helps with request/user typing
+- how validation improves API safety
+- how to add OAuth to an existing JWT backend
+
+---
+
+## Improvement Areas To Remember
+
+- align `.env.example` with current JWT secret names
+- expand Zod validation to more routes
+- improve repository return typing
+- make v2 routes meaningful when new features are added
 - Understood service-repository pattern
 - Implemented error handling system
 - Used environment variables properly

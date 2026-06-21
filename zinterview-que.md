@@ -318,6 +318,266 @@ Benefits:
 **SQL**
 
 - Structured schema
+---
+
+## New Questions From Current Project
+
+### 19. What is the difference between access token and refresh token?
+
+**Answer:**
+
+An access token is used to access protected APIs and is usually short-lived.
+
+A refresh token is used to generate a new access token and is usually longer-lived.
+
+In this project:
+
+- access token is sent in the `Authorization` header
+- refresh token is stored in an `httpOnly` cookie
+
+---
+
+### 20. Why store refresh token in an `httpOnly` cookie?
+
+**Answer:**
+
+Because JavaScript cannot read `httpOnly` cookies, which reduces the risk of token theft through XSS.
+
+Benefits:
+
+- safer than storing long-lived token in localStorage
+- works well with refresh-token flow
+
+---
+
+### 21. What is RBAC?
+
+**Answer:**
+
+RBAC stands for Role-Based Access Control.
+
+It restricts routes or actions based on user roles such as:
+
+- admin
+- user
+
+In this project, the `authorize(...roles)` middleware checks whether the authenticated user has permission.
+
+---
+
+### 22. What is Passport.js?
+
+**Answer:**
+
+Passport is an authentication middleware for Node.js.
+
+It provides strategies for different login methods like:
+
+- Google OAuth
+- local auth
+- GitHub auth
+
+In this project, Passport is used for Google OAuth login.
+
+---
+
+### 23. How does Google OAuth work in your project?
+
+**Answer:**
+
+Flow:
+
+1. client hits Google login route
+2. Passport redirects to Google
+3. user authenticates with Google
+4. callback receives Google profile
+5. backend finds or creates local user
+6. backend generates app JWT tokens
+7. refresh token is stored in cookie
+8. access token is returned to client
+
+---
+
+### 24. What is Zod and why use it?
+
+**Answer:**
+
+Zod is a TypeScript-first schema validation library.
+
+It is used to validate request data at runtime.
+
+Benefits:
+
+- catches invalid input early
+- keeps controllers clean
+- works nicely with TypeScript
+
+Example uses:
+
+- validating signup request body
+
+---
+
+### 25. Why is runtime validation still needed if you use TypeScript?
+
+**Answer:**
+
+TypeScript only checks code during development.
+It does not validate actual HTTP input at runtime.
+
+So if a client sends invalid JSON, wrong types, or missing fields, TypeScript alone cannot stop that.
+
+That is why runtime validators like Zod are important.
+
+---
+
+### 26. What is CORS?
+
+**Answer:**
+
+CORS stands for Cross-Origin Resource Sharing.
+
+It controls which frontend origins are allowed to call your backend.
+
+In this project:
+
+- only allowed origins are accepted
+- credentials are enabled because refresh tokens are stored in cookies
+
+---
+
+### 27. Why use `credentials: true` in CORS?
+
+**Answer:**
+
+It allows cookies and other credentials to be sent in cross-origin requests.
+
+This is needed when the frontend must send the refresh-token cookie to the backend.
+
+---
+
+### 28. What is Helmet?
+
+**Answer:**
+
+Helmet is an Express middleware that sets secure HTTP headers.
+
+Benefits:
+
+- improves default app security
+- helps reduce common web vulnerabilities
+
+---
+
+### 29. Why use rate limiting?
+
+**Answer:**
+
+Rate limiting restricts how many requests a client can make in a time window.
+
+Benefits:
+
+- reduces brute-force login attempts
+- protects server resources
+- improves API security
+
+This project uses:
+
+- global rate limiter
+- login-specific rate limiter
+
+---
+
+### 30. What is Express declaration merging?
+
+**Answer:**
+
+Declaration merging allows us to extend existing Express types.
+
+Example use in this project:
+
+- adding custom `user` data to `req.user`
+
+This helps avoid `any` and makes auth middleware type-safe.
+
+---
+
+### 31. Why create a helper like `getRequestUser(req)`?
+
+**Answer:**
+
+Because TypeScript does not automatically know that middleware already authenticated the request.
+
+A helper function narrows the type and ensures:
+
+- `req.user` exists
+- the returned shape matches the JWT payload
+
+This makes controller code cleaner and safer.
+
+---
+
+### 32. Why separate controller, service, and repository?
+
+**Answer:**
+
+This separation keeps the code organized.
+
+- controller handles HTTP
+- service handles business logic
+- repository handles SQL
+
+Benefits:
+
+- easier maintenance
+- easier debugging
+- cleaner architecture
+
+---
+
+### 33. Why add API versioning?
+
+**Answer:**
+
+API versioning helps evolve an API without breaking older clients.
+
+For example:
+
+- `/api/v1/...`
+- `/api/v2/...`
+
+This project already has route versioning prepared.
+
+---
+
+### 34. What is the repository pattern?
+
+**Answer:**
+
+The repository pattern isolates database logic from service logic.
+
+Benefits:
+
+- cleaner code
+- better separation of concerns
+- easier future migration if DB logic changes
+
+---
+
+### 35. What are some security practices used in your project?
+
+**Answer:**
+
+This project uses:
+
+- password hashing with bcrypt
+- JWT access token flow
+- refresh token cookie
+- Helmet
+- rate limiting
+- CORS restrictions
+- role-based authorization
+- centralized error handling
 - Relational
 - Examples: MySQL, PostgreSQL
 
