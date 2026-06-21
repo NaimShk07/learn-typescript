@@ -12,19 +12,14 @@ import {
 } from "../../controllers/user.controller.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
-import rateLimit from "express-rate-limit";
+import { loginLimiter } from "../../middlewares/rate-limit.middleware.js";
+import { validate } from "../../middlewares/validate.middleware.js";
+import { createUserSchema } from "../../schemas/user.schema.js";
 
 const router = Router();
 
-router.post("/signup", asyncHandler(signUser));
-router.post(
-  "/login",
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 3,
-  }),
-  asyncHandler(loginUser)
-);
+router.post("/signup", validate(createUserSchema), asyncHandler(signUser));
+router.post("/login", loginLimiter, asyncHandler(loginUser));
 router.post("/refresh", asyncHandler(refreshToken));
 
 router
