@@ -6,7 +6,7 @@ import { gracefulShutdown } from "./config/database.js";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import authRoutes from "./routes/auth.route.js";
-import "./config/passport.ts";
+
 
 const app = express();
 

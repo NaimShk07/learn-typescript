@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { verifyRefreshToken } from "../utils/jwt.js";
+import { verifyAccessToken, verifyRefreshToken } from "../utils/jwt.js";
 import { AppError } from "../utils/AppError.js";
 import { HttpStatus } from "../types/http-status.js";
 import { getRequestUser } from "../utils/request-user.js";
@@ -9,12 +9,15 @@ export const authenticate = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.cookies.refreshToken;
+  // const token = req.cookies.refreshToken;
+  let token: string | undefined = req.headers.authorization;
   if (!token) {
     throw new AppError(HttpStatus.UNAUTHORIZED, "Unauthorized");
   }
 
-  const verifiedToken = verifyRefreshToken(token);
+  token = token.split(" ")[1];
+
+  const verifiedToken = verifyAccessToken(token);
 
   req.user = verifiedToken;
   next();
