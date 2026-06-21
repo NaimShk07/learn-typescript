@@ -1034,3 +1034,32 @@ Return New Access Token
 **Answer:**
 
 I built a User Management API using Node.js, Express, TypeScript, and MySQL following a layered architecture (Routes → Controllers → Services → Repositories). I implemented CRUD operations, centralized error handling, JWT authentication with access and refresh tokens, refresh token rotation, bcrypt password hashing, HttpOnly cookies, environment-based configuration, and code quality tooling using ESLint, Prettier, and Husky. The project follows scalable backend design principles and strong TypeScript typing throughout.
+
+---
+
+### 46. Why separate `app.ts` and `index.ts` in an Express application?
+
+**Answer:**
+
+Separating Express configuration from server startup allows for better testing and modularity.
+
+- **`app.ts`** configures Express middlewares, parses settings, registers routes, and exports the `app` instance without listening on any port.
+- **`index.ts`** imports the configured `app`, runs startup verification checks (e.g. database connectivity pings), and calls `app.listen()`.
+
+**Benefits:**
+- Prevents TCP port collisions during integration tests (like with Supertest) since tests can import `app` directly without booting the live HTTP listener.
+- Keeps startup side effects (graceful shutdowns, DB pings) out of routing configs.
+
+---
+
+### 47. Why choose Node.js built-in test runner (`node:test`) over Jest?
+
+**Answer:**
+
+Node.js v20+ native testing features offer a zero-dependency, high-speed alternative to Jest.
+
+**Benefits:**
+- **Zero Configuration & Installs:** Runs natively using standard `node` binaries, which avoids offline cache installation issues in secured sandbox/CI environments.
+- **Native ESM Support:** Works seamlessly with standard ES Modules (`"type": "module"`) without complex Babel or preset transformer workarounds.
+- **Speed:** Native execution is significantly faster and uses less memory.
+- **Mocking Support:** Built-in `mock` utility can mock timing events and object methods natively.

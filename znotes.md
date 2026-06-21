@@ -264,16 +264,15 @@ The project now has:
 
 ---
 
-## Improvement Areas To Remember
+## Improvement Areas Addressed (Completed)
 
-- align `.env.example` with current JWT secret names
-- expand Zod validation to more routes
-- improve repository return typing
-- make v2 routes meaningful when new features are added
-- Understood service-repository pattern
-- Implemented error handling system
-- Used environment variables properly
-- Enforced code quality tools
+- [x] Aligned `.env.example` with current JWT secret names.
+- [x] Expanded Zod request body validation across signup, login, and updates.
+- [x] Improved repository return types and added SafeUser constraints.
+- [x] Standardized API routing under `/api/v1/auth` and `/api/v1/user`.
+- [x] Implemented startup database connection verification check.
+- [x] Created database DDL table schema script (`schema.sql`).
+- [x] Developed robust integration test coverage (10 passing native test runner cases).
 
 ---
 

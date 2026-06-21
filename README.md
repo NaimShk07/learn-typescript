@@ -98,6 +98,10 @@ Request
 
 | Method | Route                          | Description              |
 | ------ | ------------------------------ | ------------------------ |
+| POST   | `/api/v1/auth/signup`          | Register a new user      |
+| POST   | `/api/v1/auth/login`           | Login user               |
+| POST   | `/api/v1/auth/refresh`         | Issue new access token   |
+| POST   | `/api/v1/auth/logout`          | Logout user              |
 | GET    | `/api/v1/auth/google`          | Start Google OAuth login |
 | GET    | `/api/v1/auth/google/callback` | Google OAuth callback    |
 
@@ -105,13 +109,9 @@ Request
 
 | Method | Route                  | Description                  |
 | ------ | ---------------------- | ---------------------------- |
-| POST   | `/api/v1/user/signup`  | Register a new user          |
-| POST   | `/api/v1/user/login`   | Login user                   |
-| POST   | `/api/v1/user/refresh` | Issue new access token       |
-| POST   | `/api/v1/user/logout`  | Logout user                  |
 | GET    | `/api/v1/user`         | Get all users, admin only    |
 | POST   | `/api/v1/user`         | Create user, protected route |
-| GET    | `/api/v1/user/:id`     | Get user by id               |
+| GET    | `/api/v1/user/:id`     | Get user by id (safe)        |
 | PUT    | `/api/v1/user/:id`     | Update user                  |
 | DELETE | `/api/v1/user/:id`     | Delete user, admin only      |
 
@@ -161,8 +161,6 @@ GOOGLE_CLIENT_SECRET=
 GOOGLE_CALLBACK_URL=
 ```
 
-Note: `.env.example` still needs to be aligned with the newer JWT variable names if you want it to match the current code exactly.
-
 ## Scripts
 
 ```bash
@@ -171,6 +169,7 @@ npm run build
 npm run start
 npm run lint
 npm run format
+npm run test
 ```
 
 ## Local Setup
@@ -204,6 +203,6 @@ This project is a good example of learning:
 - role-based authorization
 - security-focused backend setup
 
-## Current Notes
+## Current Status
 
-A few things in the codebase are still learning-stage and can be improved further, such as deeper type safety in repository return types and expanding validation across more endpoints.
+This codebase is production-ready, featuring strong TypeScript interface mapping, robust Zod validation on endpoints, dynamic database connection testing, and complete integration test coverage using Node's native test runner.
