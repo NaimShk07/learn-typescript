@@ -12,6 +12,12 @@ export const pool = mysql.createPool({
   connectionLimit: 10,
 });
 
+export const testDbConnection = async (): Promise<void> => {
+  const connection = await pool.getConnection();
+  console.log("✅ Database connection established successfully.");
+  connection.release();
+};
+
 export const gracefulShutdown = async () => {
   console.log("Shutting down gracefully...");
   await pool.end();
