@@ -1,9 +1,11 @@
 export interface User {
-  id: number ;
+  id: number;
   name: string;
   email: string;
   password: string;
   role: string;
+  refreshToken?: string;
+  refresh_token?: string;
 }
 
 export interface CreateUserDto {

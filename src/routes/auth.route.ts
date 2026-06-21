@@ -2,6 +2,17 @@ import { Request, Response, Router } from "express";
 import passport from "passport";
 import { AppError } from "../utils/AppError.js";
 import { HttpStatus } from "../types/http-status.js";
+import {
+  loginUser,
+  signUser,
+  refreshToken,
+  logout,
+} from "../controllers/user.controller.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { authenticate } from "../middlewares/auth.middleware.js";
+import { loginLimiter } from "../middlewares/rate-limit.middleware.js";
+import { validate } from "../middlewares/validate.middleware.js";
+import { createUserSchema, loginUserSchema } from "../schemas/user.schema.js";
 
 const router = Router();
 
@@ -18,7 +29,18 @@ const getOAuthTokens = (req: Request) => {
   };
 };
 
-// 👉  <-- These two are **not** under "/user"
+// Local Auth Routes
+router.post("/signup", validate(createUserSchema), asyncHandler(signUser));
+router.post(
+  "/login",
+  loginLimiter,
+  validate(loginUserSchema),
+  asyncHandler(loginUser)
+);
+router.post("/refresh", asyncHandler(refreshToken));
+router.post("/logout", authenticate, asyncHandler(logout));
+
+// Google OAuth Routes
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
@@ -33,8 +55,7 @@ router.get(
   (req: Request, res: Response) => {
     const { accessToken, refreshToken } = getOAuthTokens(req);
 
-    // For a SPA you could redirect with the tokens in the querystring,
-    // or set them as HttpOnly cookies (recommended):
+    // For a SPA we store refresh token in cookie and send access token
     res
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,

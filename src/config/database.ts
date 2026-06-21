@@ -17,4 +17,3 @@ export const gracefulShutdown = async () => {
   await pool.end();
   process.exit(0);
 };
-

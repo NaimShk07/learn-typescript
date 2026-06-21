@@ -96,24 +96,24 @@ Request
 
 ### Auth
 
-| Method | Route                           | Description                |
-| ------ | ------------------------------- | -------------------------- |
-| GET    | `/api/v1/auth/google`           | Start Google OAuth login   |
-| GET    | `/api/v1/auth/google/callback`  | Google OAuth callback      |
+| Method | Route                          | Description              |
+| ------ | ------------------------------ | ------------------------ |
+| GET    | `/api/v1/auth/google`          | Start Google OAuth login |
+| GET    | `/api/v1/auth/google/callback` | Google OAuth callback    |
 
 ### User V1
 
-| Method | Route                    | Description                  |
-| ------ | ------------------------ | ---------------------------- |
-| POST   | `/api/v1/user/signup`    | Register a new user          |
-| POST   | `/api/v1/user/login`     | Login user                   |
-| POST   | `/api/v1/user/refresh`   | Issue new access token       |
-| POST   | `/api/v1/user/logout`    | Logout user                  |
-| GET    | `/api/v1/user`           | Get all users, admin only    |
-| POST   | `/api/v1/user`           | Create user, protected route |
-| GET    | `/api/v1/user/:id`       | Get user by id               |
-| PUT    | `/api/v1/user/:id`       | Update user                  |
-| DELETE | `/api/v1/user/:id`       | Delete user, admin only      |
+| Method | Route                  | Description                  |
+| ------ | ---------------------- | ---------------------------- |
+| POST   | `/api/v1/user/signup`  | Register a new user          |
+| POST   | `/api/v1/user/login`   | Login user                   |
+| POST   | `/api/v1/user/refresh` | Issue new access token       |
+| POST   | `/api/v1/user/logout`  | Logout user                  |
+| GET    | `/api/v1/user`         | Get all users, admin only    |
+| POST   | `/api/v1/user`         | Create user, protected route |
+| GET    | `/api/v1/user/:id`     | Get user by id               |
+| PUT    | `/api/v1/user/:id`     | Update user                  |
+| DELETE | `/api/v1/user/:id`     | Delete user, admin only      |
 
 ### User V2
 

@@ -17,7 +17,6 @@ const app = express();
 
 const allowedOrigins = new Set<string>([
   "http://localhost:5173",
-  // "https://your-production-domain.com",
 ]);
 
 const corsOptions: CorsOptions = {
@@ -30,8 +29,6 @@ const corsOptions: CorsOptions = {
   },
   credentials: true,
 };
-
-
 
 // Security
 app.use(helmet());

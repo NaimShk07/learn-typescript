@@ -318,6 +318,7 @@ Benefits:
 **SQL**
 
 - Structured schema
+
 ---
 
 ## New Questions From Current Project

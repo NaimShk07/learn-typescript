@@ -2,7 +2,11 @@ import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { config } from "./index.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
-import { findByEmail, update, create } from "../repositories/user.repository.js";
+import {
+  findByEmail,
+  update,
+  create,
+} from "../repositories/user.repository.js";
 
 interface GoogleAuthUser extends Express.User {
   accessToken: string;
@@ -12,9 +16,9 @@ interface GoogleAuthUser extends Express.User {
 passport.use(
   new GoogleStrategy(
     {
-      clientID: config.GOOGLE_CLIENT_ID!,
-      clientSecret: config.GOOGLE_CLIENT_SECRET!,
-      callbackURL: config.GOOGLE_CALLBACK_URL!,
+      clientID: config.googleClientId,
+      clientSecret: config.googleClientSecret,
+      callbackURL: config.googleCallbackUrl,
     },
     async (_accessToken, _refreshToken, profile, done) => {
       try {

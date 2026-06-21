@@ -9,13 +9,21 @@ export const authenticate = (
   res: Response,
   next: NextFunction
 ) => {
-  // const token = req.cookies.refreshToken;
-  let token: string | undefined = req.headers.authorization;
-  if (!token) {
-    throw new AppError(HttpStatus.UNAUTHORIZED, "Unauthorized");
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    throw new AppError(
+      HttpStatus.UNAUTHORIZED,
+      "Unauthorized: Missing or invalid token format"
+    );
   }
 
-  token = token.split(" ")[1];
+  const token = authHeader.split(" ")[1];
+  if (!token) {
+    throw new AppError(
+      HttpStatus.UNAUTHORIZED,
+      "Unauthorized: Token is missing"
+    );
+  }
 
   const verifiedToken = verifyAccessToken(token);
 
@@ -33,12 +41,4 @@ export const authorize = (...roles: string[]) => {
 
     next();
   };
-};
-
-export const logout = async (req: Request, res: Response) => {
-  res.clearCookie("refreshToken");
-  res.status(HttpStatus.OK).json({
-    success: true,
-    message: "User logged out successfully",
-  });
 };

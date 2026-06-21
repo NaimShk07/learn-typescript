@@ -15,8 +15,6 @@ import {
 } from "../utils/jwt.js";
 import { JwtPayload } from "../types/jwt.js";
 
-
-
 export const getUsers = async () => {
   return userRepository.findAll();
 };
@@ -31,11 +29,19 @@ export const getUsersById = async (id: number) => {
 };
 
 export const createUser = async (data: CreateUserDto) => {
-  return await userRepository.create(data);
+  const hashedPassword = await hashPassword(data.password);
+  return await userRepository.create({
+    ...data,
+    password: hashedPassword,
+  });
 };
 
 export const updateUser = async (id: number, data: UpdateUserDto) => {
-  const result = await userRepository.update(id, data);
+  const updateData = { ...data };
+  if (data.password) {
+    updateData.password = await hashPassword(data.password);
+  }
+  const result = await userRepository.update(id, updateData);
 
   if (result.affectedRows === 0) {
     throw new AppError(HttpStatus.NOT_FOUND, "User not found");
