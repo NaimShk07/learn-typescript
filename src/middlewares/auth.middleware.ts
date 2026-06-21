@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { verifyAccessToken, verifyRefreshToken } from "../utils/jwt.js";
+import { verifyAccessToken } from "../utils/jwt.js";
 import { AppError } from "../utils/AppError.js";
 import { HttpStatus } from "../types/http-status.js";
 import { getRequestUser } from "../utils/request-user.js";

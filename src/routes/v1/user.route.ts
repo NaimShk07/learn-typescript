@@ -9,9 +9,9 @@ import {
   signUser,
   refreshToken,
   logout,
-} from "../controllers/user.controller.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
-import { authenticate, authorize } from "../middlewares/auth.middleware.js";
+} from "../../controllers/user.controller.js";
+import { asyncHandler } from "../../utils/asyncHandler.js";
+import { authenticate, authorize } from "../../middlewares/auth.middleware.js";
 
 const router = Router();
 
