@@ -10,6 +10,7 @@
     "dev": "tsx watch src/index.ts",
     "lint": "eslint .",
     "format": "prettier --write .",
+    "test": "node --import tsx --test tests/**/*.test.ts",
     "prepare": "husky"
   },
   "lint-staged": {

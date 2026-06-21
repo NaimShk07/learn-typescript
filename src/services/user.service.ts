@@ -26,7 +26,12 @@ export const getUsersById = async (id: number): Promise<SafeUser> => {
     throw new AppError(HttpStatus.NOT_FOUND, "User not found");
   }
 
-  const { password: _, ...safeUser } = user;
+  const {
+    password: _,
+    refresh_token: __,
+    refreshToken: ___,
+    ...safeUser
+  } = user;
   return safeUser;
 };
 
