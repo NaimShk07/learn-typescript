@@ -26,7 +26,7 @@ const parsedEnv = envSchema.safeParse(process.env);
 
 if (!parsedEnv.success) {
   console.error("❌ Environment configuration validation failed:");
-  console.error(parsedEnv.error.format());
+  console.error(z.treeifyError(parsedEnv.error));
   process.exit(1);
 }
 

@@ -3,6 +3,7 @@ import * as userRepository from "../repositories/user.repository.js";
 import {
   CreateUserDto,
   LoginUserDto,
+  SafeUser,
   UpdateUserDto,
   User,
 } from "../types/user.types.js";
@@ -19,13 +20,14 @@ export const getUsers = async () => {
   return userRepository.findAll();
 };
 
-export const getUsersById = async (id: number) => {
+export const getUsersById = async (id: number): Promise<SafeUser> => {
   const user = await userRepository.findById(id);
   if (!user) {
     throw new AppError(HttpStatus.NOT_FOUND, "User not found");
   }
 
-  return user;
+  const { password: _, ...safeUser } = user;
+  return safeUser;
 };
 
 export const createUser = async (data: CreateUserDto) => {

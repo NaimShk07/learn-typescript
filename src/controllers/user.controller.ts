@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
 import * as userService from "../services/user.service.js";
 import { ApiResponse } from "../types/api-response.js";
-import { SafeUser, User } from "../types/user.types.js";
+import { SafeUser } from "../types/user.types.js";
 import { HttpStatus } from "../types/http-status.js";
 import { getRequestUser } from "../utils/request-user.js";
 
 export const getUsers = async (req: Request, res: Response) => {
   const users = await userService.getUsers();
 
-  const response: ApiResponse<User[]> = {
+  const response: ApiResponse<SafeUser[]> = {
     success: true,
-    data: users as User[],
+    data: users,
   };
 
   res.status(HttpStatus.OK).json(response);
@@ -19,9 +19,9 @@ export const getUsers = async (req: Request, res: Response) => {
 export const getUsersById = async (req: Request, res: Response) => {
   const user = await userService.getUsersById(Number(req.params.id));
 
-  const response: ApiResponse<User> = {
+  const response: ApiResponse<SafeUser> = {
     success: true,
-    data: user as User,
+    data: user,
   };
 
   res.status(HttpStatus.OK).json(response);

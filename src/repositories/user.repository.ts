@@ -17,7 +17,7 @@ export const findAll = async (): Promise<SafeUser[]> => {
 
 export const findById = async (id: number): Promise<User | undefined> => {
   const [rows] = await pool.query<RowDataPacket[]>(
-    "select id, name, email, role, password, refresh_token from users where id = ?",
+    "select id, name, email, role, refresh_token from users where id = ?",
     [id]
   );
   return rows[0] as User | undefined;

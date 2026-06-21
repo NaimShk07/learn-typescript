@@ -15,9 +15,7 @@ import { limiter } from "./middlewares/rate-limit.middleware.js";
 
 const app = express();
 
-const allowedOrigins = new Set<string>([
-  "http://localhost:5173",
-]);
+const allowedOrigins = new Set<string>(["http://localhost:5173"]);
 
 const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
